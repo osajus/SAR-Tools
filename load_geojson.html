@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Mod Demo</title>
+
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css' />
+    <link rel="stylesheet" href="load_geojson.css" />
+
+    <script src='https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js'></script>
+    <script src="turf.min.js"></script>
+    <script src="./load_geojson.js"></script>
+    
+    <script>
+        function browserCheck() {
+            if (navigator.userAgent.indexOf("Edg") != -1 || navigator.userAgent.indexOf("Chrome") != -1) {
+                return true;
+            } else {
+                document.body.innerHTML = "This browser is not supported. Please use Chrome or Edge."
+            }
+        }
+        window.onload = browserCheck;
+    </script>
+    
+</head>
+<body onload="browserCheck()">
+    <h1 >Track Trim Demo</h1>
+    <p> Load a GeoJSON file containing region/segment polygons and track lines.</p>
+    <p> This tool will remove track segments that fall outside of the polygon.</p>
+    <p> The resulting data will be displayed on the map and will be availabe for download</p>
+    <div id="buttonArea">
+        <button id="openFile">Open File</button>
+        <br /><br />
+    </div>
+
+    
+
+    <div id="PostExec" display="margin: 40px;">        
+        <br />File Contents:<br />
+        <p id="fileContent"> </p>
+    </div>
+    
+    <div id="map"></div>
+
+    <pre id="info"></pre>
+
+    <footer>
+        <p>Created by <a href="https://www.osajus.net" target="_new">Osajus Services</a></p>
+        <p>Get the current version <a href="https://github.com/osajus/SAR-Tools" target="_new">here</a></p>
+    </footer>
+</body>
+</html>
