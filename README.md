@@ -1,6 +1,9 @@
 # SAR-Tools
 Various Search and Rescue related tools
 
+# Installation
+Simply download the files to your drive and run index.html
+
 # Goals
 SAR events do not always happen where there is internet.  Also, interoperability means working users that may have the ability to install or run certain things due to their agency IT polices. With those thoughts in mind, this toolkit is designed with the following goals:
 * Does not require installing software.
