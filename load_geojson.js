@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (geoObj != null) {
             openFileButton.style.display = 'none';
             // display a button in the buttonAreDiv that refreshes the page
-            buttonAreaDiv.innerHTML = '<button onclick="location.reload()">Start Over</button><br /><br />';
+            buttonAreaDiv.innerHTML = '<button type="button" class="startover" onclick="location.reload()">Start Over</button><br /><br />';
         }
         
         // I didn't need to do this, and it added a step later.  Don't do it again.
@@ -57,11 +57,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         lines.sort((a, b) => (a.properties.parent > b.properties.parent) ? 1 : -1);
         
         // Loop through each track in 'lines', and calculate the total length of each track segment, grouping by track 'parent'
-        fileContent.innerHTML = '<h2>Track Lengths Inside Region/Segments</h2> <ul>';
+        fileContent.innerHTML = '<h2>Track Lengths Inside Region/Segments</h2>';
         
         fileContent.innerHTML += get_stats(lines);
 
-        fileContent.innerHTML += '</ul>';
+        buttonAreaDiv.innerHTML += '<p><button type="button" class="download_xls" onclick="export_to_excel()">Export Data as Excel</button></p>';
+
 
         // Display the map on the webpage
         loadMap(features, lines);
@@ -73,13 +74,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // Unhide the PostExec div
         PostExecDiv.style.display = 'block';
 
-        // Create a hyperlink to download the file
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([lines], {type: 'application/json'}));
-        a.download = 'modified.geojson';
-        a.innerText = 'Download modified file';
-        a.display = 'block';
-        buttonAreaDiv.appendChild(a);}
+        // Create a button to download the file
+        let b = document.createElement('button');
+        b.innerText = 'Download modified file';
+        b.className = 'download_geojson';
+        b.onclick = () => {
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([lines], {type: 'application/json'}));
+            a.download = 'modified.geojson';
+            a.innerText = 'Download modified geoJson';
+            a.display = 'block';
+            a.click();
+            document.body.removeChild
+        }
+        buttonAreaDiv.appendChild(b);
+    }
 });
 
 function get_stats(lines) {
@@ -90,7 +99,6 @@ function get_stats(lines) {
     let polygons = lines.filter(element => element.properties.segment != null).map(element => element.properties.segment);
     // Remove duplicate names
     polygons = [...new Set(polygons)];
-    
     for (let polygon in polygons) {
         let polygon_obj = {
             segment_name: polygons[polygon],
@@ -109,7 +117,8 @@ function get_stats(lines) {
                 if (!found) {
                     polygon_obj.parts.push({
                         track_name: lines[line].properties.parent,
-                        length: turf.length(lines[line], {units: 'meters'})
+                        length: turf.length(lines[line], {units: 'meters'}),
+                        segment_area: lines[line].properties.segment_area
                     });
                 } 
                 // if not, add the length to the existing part
@@ -124,18 +133,87 @@ function get_stats(lines) {
         }   
         polygons_array.push(polygon_obj);
     }
-    console.log(polygons_array);
 
-    let linestats = '';
-    for (let polygon in polygons_array) {
-        linestats += '<li>' + polygons_array[polygon].segment_name + '<ul>';
-        for (let part in polygons_array[polygon].parts) {
-            linestats += '<li>' + polygons_array[polygon].parts[part].track_name + ': ' + polygons_array[polygon].parts[part].length.toFixed(2) + ' meters</li>';
-        }
-        linestats += '</ul></li>';
-    }
+    // Default values
+    let searchers = '0';
+    let esw = '0';
+    let linestats = `
+    <form id="trackStats">
+    <table>
+        <tr>
+            <th class="firstCol"></th>
+            <th>Track Length</th>
+            <th>Searchers</th>
+            <th>Estimated Sweep Width</th>
+            <th>Total Track Length</th>
+            <th>Area Effectively Searched</th>
+            <th>Segment Area</th>
+            <th>Coverage</th>
+        </tr>
+        <tr>
+            <td class="subh"></th>
+            <td class="subh">(TL)</th>
+            <td class="subh">(S)</th>
+            <td class="subh">(ESW)</th>
+            <td class="subh">(TTL) or (Z)</th>
+            <td class="subh">(AES)</th>
+            <td class="subh">(A)</th>
+            <td class="subh">(C)</th>
+        </tr>
+        <tr>
+            <td class="subh"></td>
+            <td class="subh">meters</td>
+            <td class="subh"></td>
+            <td class="subh">meters</td>
+            <td class="subh">meters</td>
+            <td class="subh">meters\u00B2</td>
+            <td class="subh">meters\u00B2</td>
+            <td class="subh"></td>
+        </tr>
     
+    `;
+    let rownum = 0;
+    for (let polygon in polygons_array) {
+        linestats += `<tr><td class="firstCol"><b>Segment: ${polygons_array[polygon].segment_name}</b></td><td colspan=7></td></tr>`;
+        for (let part in polygons_array[polygon].parts) {
+            let tl = polygons_array[polygon].parts[part].length;
+            let segmentArea = polygons_array[polygon].parts[part].segment_area;
+            let ttl = tl * searchers;
+            let aes = ttl * esw;
+            let coverage = aes / segmentArea;
+            linestats += `
+            <tr id="row_${rownum}">
+                <td class="firstCol">${polygons_array[polygon].parts[part].track_name}</td>
+                <td><input type="number" name="TL" value="${tl.toFixed(2)}" readonly></td>
+                <td><input type="number" name="Searchers" value="${searchers}" onchange="calculate_coverage('row_${rownum}')"></td>
+                <td><input type="number" name="ESW" value="${esw}" onchange="calculate_coverage('row_${rownum}')"></td>
+                <td><input type="number" name="TTL" value="${ttl.toFixed(2)}" readonly></td>
+                <td><input type="number" name="AES" value="${aes.toFixed(2)}" readonly></td>
+                <td><input type="number" name="SegmentArea" value="${segmentArea.toFixed(2)}" readonly></td>
+                <td><input type="number" name="Coverage" value="${coverage.toFixed(2)}" readonly></td>
+            </tr>`;
+            rownum++;
+        }
+    }
+    linestats += '</table>';
     return linestats;
+}
+
+function calculate_coverage(row) {
+    var thisRow = document.getElementById(row);
+
+    let searchers = thisRow.querySelectorAll('[name=Searchers]')[0].value;
+    let esw = thisRow.querySelectorAll('[name=ESW]')[0].value;
+    let tl = thisRow.querySelectorAll('[name=TL]')[0].value;
+    let segmentArea = thisRow.querySelectorAll('[name=SegmentArea]')[0].value;
+
+    let ttl = thisRow.querySelectorAll('[name=TTL]')[0];
+    let aes = thisRow.querySelectorAll('[name=AES]')[0];
+    let coverage = thisRow.querySelectorAll('[name=Coverage]')[0];
+    
+    ttl.value = (tl * searchers).toFixed(2);
+    aes.value = (ttl.value  * esw).toFixed(2);
+    coverage.value = (aes.value / segmentArea).toFixed(2);
 }
 
 function intersect_track(features) {
@@ -169,9 +247,11 @@ function intersect_track(features) {
                             "title": track[j].properties.title + "-" + polygons[i].properties.title + "-seg"+ segNum++,
                             "parent": track[j].properties.title,
                             "segment": polygons[i].properties.title,
+                            "segment_area": turf.area(polygons[i]),
                             "stroke": trackColor,
                             "stroke-opacity": 1,
-                            "pattern": "solid"
+                            "pattern": "solid",
+                            "description": track[j].properties.title
                         }
                     };
                     // My cat is being annoying right now and wants you to know this.
@@ -214,7 +294,7 @@ function loadMap(features, lines) {
                     paint : {
                         'fill-color' : '#333',
                         'fill-opacity' : 0.2
-                    }
+                    },
                 });
 
                 last_poly = features[i];
@@ -274,82 +354,35 @@ function loadMap(features, lines) {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function loadMap_old(features) {
-    const map = new maplibregl.Map({
-        container: 'map', // container id
-        style: 'https://demotiles.maplibre.org/style.json', // style URL
-        center: [0, 0], // starting position [lng, lat]
-        zoom: 1, // starting zoom
-        maplibreLogo: true
+function export_to_excel() {
+    // Gather form data
+    const form = document.getElementById('trackStats');
+    const rows = form.querySelectorAll('tr');
+    const data = [];
+    
+    // Iterate through each row and collect data
+    rows.forEach(row => {
+        const rowData = {};
+        const firstCol = row.querySelector('.firstCol');
+        if (firstCol) {
+            rowData['Segment/Track'] = firstCol.innerText;
+        }
+        row.querySelectorAll('input').forEach(input => {
+            rowData[input.name] = input.value;
+        });
+        if (Object.keys(rowData).length > 1) {
+            data.push(rowData);
+        }
     });
 
-    map.on('load', function() {
-        let last_poly = null;
-        // Add the features to the map
-        for (let i = 0; i < features.length; i++) {
-            map.addSource(features[i].properties.title, {
-                type : 'geojson',
-                data : features[i]
-            })
-
-            // Map the polygons
-            if (features[i].geometry.type === 'Polygon') {
-                map.addLayer({
-                    id : features[i].properties.title,
-                    source : features[i].properties.title,
-                    type : 'fill',
-                    paint : {
-                        'fill-color' : '#333',
-                        'fill-opacity' : 0.2
-                    }
-                });
-                last_poly = features[i];
-            } 
-
-            // Map the tracks
-            if (features[i].geometry.type === 'LineString') {
-                map.addLayer({
-                    id : features[i].properties.title,
-                    source : features[i].properties.title,
-                    type : 'line',
-                    paint : {
-                        'line-color' : '#000',
-                        'line-width' : 1
-                    }
-                });
-            }
-        }
-        // Center the map on the last mapped polygon
-        if (last_poly) {
-            map.setCenter(last_poly.geometry.coordinates[0][0]);
-        }
-        //center the map on the first polygon
-        map.setZoom(10);
-    });
-}
-
+    console.log(data);
+    // Convert data to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+  
+    // Create a new workbook and append the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Form Data');
+  
+    // Export the workbook to an Excel file
+    XLSX.writeFile(workbook, 'form_data.xlsx');
+  }

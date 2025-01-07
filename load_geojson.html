@@ -12,6 +12,7 @@
     <script src='https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js'></script>
     <script src="turf.min.js"></script>
     <script src="./load_geojson.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     
     <script>
         function browserCheck() {
@@ -31,7 +32,7 @@
     <p> This tool will remove track segments that fall outside of the polygon.</p>
     <p> The resulting data will be displayed on the map and will be availabe for download</p>
     <div id="buttonArea">
-        <button id="openFile">Open File</button>
+        <button id="openFile" class="openFile">Open File</button>
         <br /><br />
     </div>
 
