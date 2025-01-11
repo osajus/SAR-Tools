@@ -6,11 +6,22 @@
 </head>
 <body>
     <h1>SAR Tools</h1>
+    <p>Various Search and Rescue related planning tools.  Designed for offline use.</p>
     
     <div class="card_div">
         <p><a href="load_geojson.html" target="_self" class="in_card">Trim SAR Tracks</a></p> 
         <p>This script takes a geojson file containing region/segment polygons and track lines. The tool removes portions of the track lines that fall outside of the region/segments.</p>
     </div>
+
+    <div class="card_div">
+        <p><a href="consensus.html" target="_self" class="in_card">Consensus</a></p> 
+        <p>Calculate scenario weights using a consensus.  Currently Proportional Consensus is the only option.  There are plans for allowing this to calculate other consensus methods.</p>
+    </div>
+
+    <div class="card_div">
+        <p><span style="font-weight: bold;">Disclaimer</span></p>
+        <p>This software has very limited testing and no field testing.  Use at your own risk.  I make no statements regarding accuracy of the data.  The software is distributed AS IS and is subject to the license as defined in the license file. </p>
+    </div>  
 
     <footer>
         <div class="container">
