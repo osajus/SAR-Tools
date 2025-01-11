@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>File Mod Demo</title>
 
-    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css' />
-    <link rel="stylesheet" href="load_geojson.css" />
+    <link rel='stylesheet' href='./assets/css/maplibre-gl.css' />
+    <link rel="stylesheet" href="./assets/css/main.css" />
+    <link rel="stylesheet" href="./assets/css/load_geojson.css" />
+    
 
-    <script src='https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js'></script>
-    <script src="turf.min.js"></script>
-    <script src="./load_geojson.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src='./assets/js/maplibre-gl.js'></script>
+    <script src="./assets/js/turf.min.js"></script>
+    <script src="./assets/js/load_geojson.js"></script>
+    <script src="./assets/js/load_geojson.js"></script>
     
     <script>
         function browserCheck() {
@@ -33,12 +35,11 @@
     <p> The resulting data will be displayed on the map and will be availabe for download</p>
     <div id="buttonArea">
         <button id="openFile" class="openFile">Open File</button>
-        <br /><br />
     </div>
 
     
 
-    <div id="PostExec" display="margin: 40px;">        
+    <div id="PostExec" display="margin: 40px;" class="card_div">        
         <p id="fileContent"> </p>
     </div>
     
@@ -47,8 +48,8 @@
     <pre id="info"></pre>
 
     <footer>
-        <p>Created by <a href="https://www.osajus.net" target="_new">Osajus Services</a></p>
-        <p>Get the current version <a href="https://github.com/osajus/SAR-Tools" target="_new">here</a></p>
+        <p>Created by <a href="https://www.osajus.net" target="_new" class="in_card">Osajus Services, LLC</a></p>
+        <p>Get the current version <a href="https://github.com/osajus/SAR-Tools" target="_new" class="in_card">here</a></p>
     </footer>
 </body>
 </html>

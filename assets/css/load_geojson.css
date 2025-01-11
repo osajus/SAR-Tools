@@ -1,0 +1,130 @@
+
+#map {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 50%;
+    border-radius: 10px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.5 );
+    color: #000;
+    display: none;
+}
+
+#info {
+    display: none;
+    position: relative;
+    bottom: 0px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    color: #000;
+    background: #fff;
+}
+
+
+
+table {
+    width: 100%;
+}
+
+th, td {
+    width: 100px;
+    padding: 15px 0;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    vertical-align: unset;
+    line-height: 18px;
+    font-weight: 400;
+    word-break: normal;
+}
+
+td.subh {
+    width: 100px;
+    padding: 0px 0;
+    text-align: center;
+    vertical-align: unset;
+    font-weight: 400;
+    border-top: none;
+}
+
+.firstCol {
+    width: 200px;
+    text-align: left;
+}
+
+input[type="number"] {
+    text-align: right;
+    
+}
+
+input:hover {
+    outline: none;
+    border: 1px solid #095484;
+}
+
+input[readonly] {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    color: #000;
+}
+
+input[name="ESW"] {
+    width: 50px;
+}
+
+input[name="Searchers"], input[name="Coverage"] {
+    width: 45px;
+}
+
+input[name="TL"], input[name="SegmentArea"], input[name="AES"], input[name="TTL"] {
+    width: 100px;
+}
+
+#buttonArea {
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+button {
+    background-color: #fff000;
+    border-radius: 12px;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 15px;
+    text-align: center;
+    transition: 200ms;
+    width: 200px;
+    box-sizing: border-box;
+    border: 0;
+    font-size: 14px;
+    user-select: none;
+    -webkit-user-select: none;
+
+}
+
+.download_geojson {
+    background-color: #48e4ff;
+}
+
+.download_xls {
+    background-color: #1cb733;
+}
+
+.startover {
+    background-color: #ee5050;
+    color: #fff;
+}
+
+.openFile {
+    background-color: #5E5DF0;
+    color: #fff;
+}
+
+
