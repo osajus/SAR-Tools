@@ -1,0 +1,74 @@
+
+
+#instructions {
+    cursor: pointer;
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 5px 30px 30px 15px;
+    margin: 30px 10px 30px 30px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.5 );
+    color: #000;
+}
+
+.userVars {
+    border: #000 1px solid;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.userVars input {
+    width: 50px;
+}
+
+.userVars input:hover {
+    border: #000 2px solid;
+}
+
+.userVars label:hover {
+    background-color: var(--seasalt);
+}
+
+.userVars h4 {
+    margin-top: 0;
+    border-bottom: #000 1px solid;
+}
+
+
+label {
+    display: inline-block;
+    width: 150px;
+    text-align: left;
+}
+
+#buttonArea {
+    margin-top: 20px;
+}
+
+
+#map {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 50%;
+    border-radius: 10px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.5 );
+    color: #000;
+    display: none;
+}
+
+#info {
+    display: none;
+    position: relative;
+    bottom: 0px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    color: #000;
+    background: #fff;
+}

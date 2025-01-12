@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>POA Intersect Calculator</title>
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/intersects.css">
+    <link rel='stylesheet' href='./assets/css/maplibre-gl.css' />
+    
+
+    <script src='./assets/js/maplibre-gl.js'></script>
+    <script src="./assets/js/turf.min.js"></script>
+    <script type="text/javascript" src="./assets/js/intersects.js"></script>
+
+</head>
+<body>
+    <h1>POA Intersect Calculator</h1>
+    <hr>
+    <p>This area combines statistical areas and intersects with region polygons.</p>
+    <h1 onClick="toggleinstructions()">Instructions <img src="./assets/images/down.svg" alt="expand" width="20px" id="toggle"></h1> 
+    
+    <div id="instructions" style="display:none;">
+        <p>Fill the statistical data boxes with values as they appear in the Lost Person Behavior book. All values are metric.</p>
+        <p>The 100% value should be your theoretical maximum.</p>
+        <p>Load your SAR Topo extract file.  This file <u>must</u> contain a single marker labeled 'IPP' and at least one region/segment polygon.</u></p>
+    </div>
+
+    <div class="card_div" id="userVariables">
+        <div style="display: flex;">
+            <div class=userVars style="flex-item-left: 50%">
+            <form>
+            <h4>Distances from IPP km</h4>
+            <label for="ipp25">25%</label><input type="number" id="dipp25%" name="ipp25" value="0" min="0" onChange="changeVal('dipp', 0, event)"><br>
+            <label for="ipp50">50%</label><input type="number" id="dipp50%" name="ipp50" value="0" min="0" onChange="changeVal('dipp', 1, event)"><br>
+            <label for="ipp75">75%</label><input type="number" id="dipp75%" name="ipp75" value="0" min="0" onChange="changeVal('dipp', 2, event)"><br>
+            <label for="ipp95">95%</label><input type="number" id="dipp95%" name="ipp95" value="0" min="0" onChange="changeVal('dipp', 3, event)"><br>
+            <label for="ipp100">100%</label><input type="number" id="dipp100%" name="ipp100" value="0" min="0" onChange="changeVal('dipp', 4, event)"><br>
+        </form>
+        </div>
+        <div class=userVars style="flex-item-right: 50%">
+            <h4>Dispersion Angles</h4>
+            <label for="da25">25%</label><input  type="number" id="da25%" name="da25" value="0" min="0" max="360" onChange="changeVal('da', 0, event)"><br>
+            <label for="da50">50%</label><input  type="number" id="da50%" name="da50" value="0" min="0" max="360" onChange="changeVal('da', 1, event)"><br>
+            <label for="da75">75%</label><input  type="number" id="da75%" name="da75" value="0" min="0" max="360" onChange="changeVal('da', 2, event)"><br>
+            <label for="da95">95%</label><input  type="number" id="da95%" name="da95" value="0" min="0" max="360" onChange="changeVal('da', 3, event)"><br>
+            <label for="da100">100%</label><input type="number" id="da100%" name="da100" value="360" min="0" max="360" onChange="changeVal('da', 4, event)"><br><br>
+            <label for="dot">Direction of Travel</label><input type="number" id="dot" name="dot" value="0" min="0" max="360" onChange="changeVal('dot', 0, event)"><br>
+            </form> 
+        </div>
+    </div>
+    <div id="buttonArea">
+        <button id="openFile" class="openFile">Open File</button>
+    </div>
+</div>
+
+<div id="dynamicArea"></div>
+
+<div id="map"></div>
+
+<pre id="info"></pre>
+
+    <footer>
+        <p>Created by <a href="https://www.osajus.net" target="_new" class="in_card">Osajus Services, LLC</a></p>
+        <p>Get the current version <a href="https://github.com/osajus/SAR-Tools" target="_new" class="in_card">here</a></p>
+    </footer>
+</body>
+
+
+</html>
