@@ -36,8 +36,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // Read the stream as text
         const contents = await file.text();
 
+        let geoObj = contents;
+
         // Parse the JSON into a javascript object
-        let geoObj = JSON.parse(contents);
+        geoObj = JSON.parse(geoObj);
+        console.log(geoObj);
 
         // Hide the open file button if a file has been loaded
         if (geoObj != null) {
@@ -219,16 +222,21 @@ function calculate_coverage(row) {
 function intersect_track(features) {
     // Determine which portion of the tracks reside inside polygons
 
+    // Filter out any folders or other non-features
+    features = features.filter(element => element.geometry != null);
+
     // Filter the features into tracks and polygons
     let track = features.filter(element => element.geometry.type === 'LineString');
     let polygons = features.filter(element => element.geometry.type === 'Polygon');
     let lines = [];
+
     // Loop through each polygon
     for (let i = 0; i < polygons.length; i++) {
         // create a random color hex code for the track display
         let trackColor = '#' + Math.floor(Math.random()*16777215).toString(16);
         // Loop through each track
         for (let j = 0; j < track.length; j++) {
+
             // linesplit the track with the polygon
             let split = turf.lineSplit(track[j], polygons[i]);
             // Create an incrementing segment number to append to each track segment to make unique
@@ -237,7 +245,7 @@ function intersect_track(features) {
             for (let k = 0; k < split.features.length; k++) {
                 // If the split segment is inside the polygon, create a line feature
                 if (turf.booleanContains(polygons[i], split.features[k])) {
-                let line = {
+                    let line = {
                         type: 'Feature',
                         geometry: {
                             type: 'LineString',
@@ -377,7 +385,6 @@ function export_to_excel() {
         }
     });
 
-    console.log(data);
     // Convert data to worksheet
     const worksheet = XLSX.utils.json_to_sheet(data);
   
@@ -387,4 +394,4 @@ function export_to_excel() {
   
     // Export the workbook to an Excel file
     XLSX.writeFile(workbook, 'form_data.xlsx');
-  }
+}
