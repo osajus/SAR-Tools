@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // Parse the JSON into a javascript object
         geoObj = JSON.parse(geoObj);
-        console.log(geoObj);
 
         // Hide the open file button if a file has been loaded
         if (geoObj != null) {
@@ -286,6 +285,9 @@ function loadMap(features, lines) {
     map.on('load', function() {
         document.getElementById('map').style.display = 'block';
     
+        // Remove features, like folders, that don't have geometry
+        features = features.filter(element => element.geometry != null);
+        
         // Create a variable to store the last polygon mapped
         let last_poly = null;
 
