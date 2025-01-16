@@ -3,9 +3,6 @@
 /*
 
 TODO
--Change variable on user input change
--Save changes to local storage
--Scenario Weights
 -Export to Excel
 -Consensus types
 
