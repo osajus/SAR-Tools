@@ -5,8 +5,18 @@
     <title>Consensus</title>
     <link rel="stylesheet" href="./assets/css/main.css">
     <link rel="stylesheet" href="./assets/css/consensus.css">
-    <script type="text/javascript" src="./assets/js/consensus.js"></script>
-
+    <script src="./assets/js/consensus.js"></script>
+    <script src="./assets/js/xlsx.full.min.js"></script>
+    <script>
+        function browserCheck() {
+            if (navigator.userAgent.indexOf("Edg") != -1 || navigator.userAgent.indexOf("Chrome") != -1) {
+                return true;
+            } else {
+                document.body.innerHTML = "This browser is not supported. Please use Chrome or Edge."
+            }
+        }
+        window.onload = browserCheck;
+    </script>
 </head>
 <body>
     <h1>Consensus</h1>

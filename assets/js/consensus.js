@@ -45,7 +45,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 function build_scenario_table(scenarios, dynamicArea) {
-    dynamicArea.innerHTML = `<div class=buttonArea><button type="button" onClick="add_scenario(${scenarios.length}, document.getElementById('dynamicArea'))">Add Scenario</button></div>`
+    dynamicArea.innerHTML = `
+    <div class=buttonArea>
+        <button type="button" onClick="add_scenario(${scenarios.length}, document.getElementById('dynamicArea'))">Add Scenario</button>
+        <button type="button" class="download_xls" onclick="export_to_excel()">Export Data as Excel</button>
+    </div>`
     let html = "";
 
     for (let scenarioIdx = 0; scenarioIdx < scenarios.length; scenarioIdx++) {
@@ -53,13 +57,13 @@ function build_scenario_table(scenarios, dynamicArea) {
         html = `<div class="card_div">
         <input type=text class="scenario_head" value ='${scenario.name}' onChange="rename_scenario(${scenarioIdx}, event)"><img src="./assets/images/trash.svg"  alt="remove" class=remove onClick="remove_scenario(${scenarioIdx}, document.getElementById('dynamicArea'))"></h2>
         <input type=text class="scenario_desc" value='${scenario.description}' onChange="rename_description(${scenarioIdx}, event)"></input>
-        <form>
+        <form id=consensus>
         <table id="scenario_${scenarioIdx}">
             <thead>
                 <tr>
                     <th>Participants</th>`;
         for (let regionIdx = 0; regionIdx < scenario.regions.length; regionIdx++) {
-            html += `<th><input type=text class="region" value="${scenario.regions[regionIdx]}" onChange="rename_region(${scenarioIdx}, ${regionIdx}, event)"><img src="./assets/images/trash.svg"  alt="remove" class=remove onClick="remove_region(${scenarioIdx}, ${regionIdx}, document.getElementById('dynamicArea'))"></th>`;
+            html += `<th class="firstCol"><input type=text class="region" value="${scenario.regions[regionIdx]}" onChange="rename_region(${scenarioIdx}, ${regionIdx}, event)"><img src="./assets/images/trash.svg"  alt="remove" class=remove onClick="remove_region(${scenarioIdx}, ${regionIdx}, document.getElementById('dynamicArea'))"></th>`;
         }
         
         html += `<th><button type="button" onClick="add_region(${scenarioIdx}, document.getElementById('dynamicArea'))">Add</button></th>
@@ -104,6 +108,7 @@ function build_scenario_table(scenarios, dynamicArea) {
         dynamicArea.innerHTML += html;
 
         update_totals(scenarioIdx);
+        
     }
     
 }
@@ -227,3 +232,37 @@ function toggleinstructions() {
         toggleImg.src = './assets/images/down.svg';
     }
   } 
+
+function export_to_excel() {
+    // Gather form data
+    const form = document.getElementById('consensus');
+    const rows = form.querySelectorAll('tr');
+    const data = [];
+    console.log(rows)
+    
+    // Iterate through each row and collect data
+    rows.forEach(row => {
+        const rowData = {};
+        const firstCol = row.querySelector('.firstCol');
+        console.log(firstCol);
+        if (firstCol) {
+            rowData['Segment/Track'] = firstCol.innerText;
+        }
+        row.querySelectorAll('input').forEach(input => {
+            rowData[input.name] = input.value;
+        });
+        if (Object.keys(rowData).length > 1) {
+            data.push(rowData);
+        }
+    });
+
+    // Convert data to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+  
+    // Create a new workbook and append the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Form Data');
+  
+    // Export the workbook to an Excel file
+    //XLSX.writeFile(workbook, 'consensus.xlsx');
+}
