@@ -177,6 +177,7 @@ function get_stats(lines) {
     let rownum = 0;
     for (let polygon in polygons_array) {
         linestats += `<tr><td class="firstCol"><b>Segment: ${polygons_array[polygon].segment_name}</b></td><td colspan=7></td></tr>`;
+        let current_segment = polygons_array[polygon].segment_name;
         for (let part in polygons_array[polygon].parts) {
             let tl = polygons_array[polygon].parts[part].length;
             let segmentArea = polygons_array[polygon].parts[part].segment_area;
@@ -185,6 +186,7 @@ function get_stats(lines) {
             let coverage = aes / segmentArea;
             linestats += `
             <tr id="row_${rownum}">
+                <input type="hidden" name="Segment" value="${current_segment}">
                 <td class="firstCol">${polygons_array[polygon].parts[part].track_name}</td>
                 <td><input type="number" name="TL" value="${tl.toFixed(2)}" readonly></td>
                 <td><input type="number" name="Searchers" value="${searchers}" onchange="calculate_coverage('row_${rownum}')">
@@ -378,11 +380,12 @@ function export_to_excel() {
     rows.forEach(row => {
         const rowData = {};
         const firstCol = row.querySelector('.firstCol');
+        // The first column just has text, so we read it's innerText
         if (firstCol) {
-            rowData['Segment/Track'] = firstCol.innerText;
+            rowData['Track'] = firstCol.innerText;
         }
 
-
+        // The rest have input names/values
         row.querySelectorAll('input').forEach(input => {
             rowData[input.name] = input.value;
         });
