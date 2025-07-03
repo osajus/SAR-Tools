@@ -187,8 +187,10 @@ function get_stats(lines) {
             <tr id="row_${rownum}">
                 <td class="firstCol">${polygons_array[polygon].parts[part].track_name}</td>
                 <td><input type="number" name="TL" value="${tl.toFixed(2)}" readonly></td>
-                <td><input type="number" name="Searchers" value="${searchers}" onchange="calculate_coverage('row_${rownum}')"></td>
-                <td><input type="number" name="ESW" value="${esw}" onchange="calculate_coverage('row_${rownum}')"></td>
+                <td><input type="number" name="Searchers" value="${searchers}" onchange="calculate_coverage('row_${rownum}')">
+                <img src="assets/images/check-double-solid.svg" class="in_icon" onclick="showSetAllWarning(event, 'Searchers')" title="Set All" /></td>
+                <td><input type="number" name="ESW" value="${esw}" onchange="calculate_coverage('row_${rownum}')">
+                <img src="assets/images/check-double-solid.svg" class="in_icon" onclick="showSetAllWarning(event, 'ESW')" title="Set All" /></td>
                 <td><input type="number" name="TTL" value="${ttl.toFixed(2)}" readonly></td>
                 <td><input type="number" name="AES" value="${aes.toFixed(2)}" readonly></td>
                 <td><input type="number" name="SegmentArea" value="${segmentArea.toFixed(2)}" readonly></td>
@@ -379,6 +381,8 @@ function export_to_excel() {
         if (firstCol) {
             rowData['Segment/Track'] = firstCol.innerText;
         }
+
+
         row.querySelectorAll('input').forEach(input => {
             rowData[input.name] = input.value;
         });
@@ -397,3 +401,32 @@ function export_to_excel() {
     // Export the workbook to an Excel file
     XLSX.writeFile(workbook, 'form_data.xlsx');
 }
+
+function showSetAllWarning(event, col_name) {
+    event.preventDefault();
+    // Find the input box preceding the [Set] link and display its value
+    const input = event.target.closest('td').querySelector('input');
+    let setVal = input.value;
+    const confirmed = confirm('Are you sure you want to set all ' + col_name + ' to ' + setVal + '? This will overwrite all existing values in this column.');
+    if (confirmed) {
+        // Set all values in this column to this value
+        const rows = document.querySelectorAll('tr');
+        rows.forEach(row => {
+            const input = row.querySelector(`input[name="${col_name}"]`);
+            if (input) {
+                input.value = setVal;
+                // Trigger onchange if present to update calculated fields
+                if (typeof input.onchange === "function") {
+                    input.onchange();
+                } else {
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        });
+
+    }
+}
+
+
+
+
